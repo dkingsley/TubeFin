@@ -1,0 +1,110 @@
+Option Explicit
+'Script written by <insert name>
+'Script copyrighted by <insert company name>
+'Script version Monday, November 10, 2014 10:23:24 AM
+
+Call Main()
+Sub Main()
+
+	Dim numberTFs,numberBT,numberTD,numberWT
+	Dim numberTF(3),bodyDiam(3), tubeDiam(3), wallThick(3)
+		
+	bodyDiam(0) = 1.636
+	numberBT = 1
+
+	numberTF(0) = 3
+	numberTF(1) = 4
+	numberTF(2) = 6
+	numberTFs = 3
+	
+	tubeDiam(0) = 0.976
+	tubeDiam(1) = 1.637
+	tubeDiam(2) = 2.217
+	numberTD = 3
+	
+	wallThick(0) = 0.013
+	wallThick(1) = 0.021
+	wallThick(2) = 0.021
+	numberWT = 3
+	
+	Dim i,j,k,l
+	Dim delta, bodyRad, tubeRad, tubeArm, tubeLength
+	Dim currentAngle
+	Dim btLayer,result
+	
+	For i =0 To numberBT - 1
+		Dim strBTLayer 
+		strBTLayer = "Body Tube Diameter: " & bodyDiam(i)
+		result = Rhino.AddLayer(strBTLayer)
+		If IsNull(result) Then
+			rhino.MessageBox("Error Creating Body Tube Layer: " & strBTLayer)
+		End If
+		rhino.CurrentLayer(strBTLayer)
+		
+		Rhino.Command "_Cylinder 0,0 " & bodyDiam(i) & " 30"
+		Rhino.Command "_Cone w0,0,30 " & bodyDiam(i) / 2 & " 5"
+		
+		bodyRad = bodyDiam(i) / 2
+		
+		
+		For j=0 To numberTD - 1
+			Dim strTBLayer 
+			strTBLayer = "Tube Fin Diameter: " & tubeDiam(j)
+			result = rhino.AddLayer(strTBLayer,,,, strBTLayer) 
+			If IsNull(result) Then
+				rhino.MessageBox("Error Creating Tube Fin Layer: " & strTBLayer)
+			End If
+			rhino.CurrentLayer(strBTLayer & "::" & strTBLayer)
+			
+			tubeRad = tubeDiam(j) / 2
+			tubeArm = bodyRad + tubeRad - wallThick(j) / 4
+			tubeLength = tubeDiam(j) * 4
+			
+			For k = 0 To numberTFs - 1
+				Dim strFinLayer
+				strFinLayer = numberTF(k) & " Tube Fins"
+				result = rhino.AddLayer(strFinLayer,,,, strTBLayer)
+				If IsNull(result) Then
+					rhino.MessageBox("Error Creating Number of Fins layer: " & strFinLayer)
+				End If
+				rhino.CurrentLayer(strBTLayer & "::" & strTBLayer & "::" & strFinLayer)
+				'rhino.MessageBox("Current Layer Tube Fin Layer " & rhino.CurrentLayer())
+				
+				Call DrawTubeFins(numberTF(k), tubeArm, tubeDiam(j), wallThick(j), tubeLength)
+			
+				rhino.CurrentLayer(strBTLayer & "::" & strTBLayer)
+				'rhino.MessageBox("Current Layer Body Tube Layer" & rhino.CurrentLayer())
+			Next
+			rhino.CurrentLayer(strBTLayer)
+			'rhino.MessageBox("Current Layer Body Tube Layer " & rhino.CurrentLayer())
+		Next
+		rhino.CurrentLayer("Default")
+		'rhino.MessageBox("Default")
+	Next
+	
+	
+	
+End Sub
+
+Sub DrawTubeFins(ByVal numberFins, ByVal tubeArm, ByVal tubeDiam, ByVal wallThick, ByVal tubeLength)
+	
+	Dim delta, currentAngle
+	Dim i
+	delta = 2 * rhino.PI / numberFins
+	
+	For i=0 To numberFins - 1
+
+					
+		Dim x,y
+		x = tubeArm * cos(currentAngle)
+		y = tubeArm * sin(currentAngle)
+		
+		Rhino.Command "_Tube " & x & "," & y & " " & tubeDiam & " " & tubeDiam - wallThick & " " & tubeLength
+				
+		currentAngle = currentAngle + delta
+			
+	Next
+	
+	currentAngle = 0
+	
+End Sub
