@@ -1,0 +1,57 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      turbulenceModel;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+turbulenceModel kEpsilon;
+
+turbulence on;
+
+laminarCoeffs{}
+
+kEpsilonCoeffs
+{
+Cmu Cmu [ 0 0 0 0 0 0 0 ] 0.09;
+C1 C1 [ 0 0 0 0 0 0 0 ] 1.44;
+C2 C2 [ 0 0 0 0 0 0 0 ] 1.92;
+alphaEps alphaEps [ 0 0 0 0 0 0 0 ] 0.76923;
+}
+
+realizableKeCoeffs
+{
+Cmu Cmu [0 0 0 0 0 0 0] 0.09;
+A0 A0 [0 0 0 0 0 0 0] 4.04;
+C2 C2 [0 0 0 0 0 0 0] 1.92;
+alphak alphak [0 0 0 0 0 0 0] 1.0;
+alphaEps alphaEps [0 0 0 0 0 0 0] 0.76923;
+alphah alphah [0 0 0 0 0 0 0] 1.0;
+}
+B
+SpalartAllmarasCoeffs
+{
+alphaNut alphaNut [ 0 0 0 0 0 0 0 ] 1.5;
+Cb1 Cb1 [ 0 0 0 0 0 0 0 ] 0.1355;
+Cb2 Cb2 [ 0 0 0 0 0 0 0 ] 0.622;
+Cw2 Cw2 [ 0 0 0 0 0 0 0 ] 0.3;
+Cw3 Cw3 [ 0 0 0 0 0 0 0 ] 2;
+Cv1 Cv1 [ 0 0 0 0 0 0 0 ] 7.1;
+Cv2 Cv2 [ 0 0 0 0 0 0 0 ] 5;
+}
+
+wallFunctionCoeffs
+{
+kappa kappa [ 0 0 0 0 0 0 0 ] 0.4187;
+E E [ 0 0 0 0 0 0 0 ] 9;
+}
+// ************************************************************************* //

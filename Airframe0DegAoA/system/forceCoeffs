@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+
+forceCoeffs1
+{
+    type        forceCoeffs;
+
+    functionObjectLibs ( "libforces.so" );
+
+    outputControl   timeStep;
+    timeInterval    1;
+
+    log         yes;
+
+    patches     ( airframe );
+    rhoName     rhoInf;      // Indicates incompressible
+    rhoInf      1;           // Redundant for incompressible
+    liftDir     (1 0 0);     // lift is in the x direction
+    dragDir     (0 0 1);     // drag is in the z direction
+    CofR        (0 0 0.381);  // half the body tube length 15 in as meters
+    pitchAxis   (0 1 0);      // pitch about the y axis
+    magUInf     100;          // 100 m/s for all cases
+    lRef        1.0;          // 1 m used for the Re calculation 
+    Aref        0.0013562;    // cross section of the airframe body tube
+}
+
+
+// ************************************************************************* //
