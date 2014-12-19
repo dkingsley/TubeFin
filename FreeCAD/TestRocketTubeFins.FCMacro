@@ -47,4 +47,8 @@ Rocket.tessellate(.002)
 Part.show(Rocket)
 sol = Rocket.Solids[0]
 print sol.CenterOfMass
-Rocket.exportStl("/scratch/dkokron/OpenFOAM/Rockets/SimpleRocketTubeFins_T002.stl")
+Rocket.exportStl("./SimpleRocketTubeFins.stl")
+# Now run the following OpenFOAM commands to get the model into the proper units and translate to the center of the computational domain.
+# surfaceTransformPoints -scale '(0.001 0.001 0.001)' SimpleRocketTubeFins.stl SimpleRocketTubeFinsMeters.stl
+# surfaceTransformPoints -translate '(0 0 .5)' SimpleRocketTubeFinsMeters.stl SimpleRocketTubeFinsMetersTranslate.stl
+# mv SimpleRocketTubeFinsMetersTranslate.stl SimpleRocketTubeFins.stl
