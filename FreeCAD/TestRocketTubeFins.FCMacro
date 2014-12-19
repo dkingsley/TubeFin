@@ -1,0 +1,50 @@
+import math
+import Part
+from FreeCAD import Base
+
+# lengths are mm
+TotalLength = 560
+NoseLength = 100
+NoseDiameter = 25
+NoseRadius = NoseDiameter/2.
+TubeFinLength = TotalLength/10.
+TubeFinRadius = 12.5
+TubeFinThickness = 1
+
+# main body
+#nose = Part.makeCone(12.5,0,100,Base.Vector(100,0,0),Base.Vector(-1,0,0),360)
+eli = Part.Ellipse(Base.Vector(NoseLength,0,0),Base.Vector(0,NoseRadius,0),Base.Vector(0,0,0))
+shape = eli.toShape(math.pi/2.,math.pi)
+l1 = Part.makeLine((0,0,0),(0,NoseRadius,0))
+l2 = Part.makeLine((0,0,0),(-NoseLength,0,0))
+wire = Part.Wire([shape,l1,l2])
+face = Part.Face(wire)
+nose = face.revolve(Base.Vector(0,0,0),Base.Vector(1,0,0),360)
+nose.translate(Base.Vector(NoseLength,0,0))
+# main body
+cylinder = Part.makeCylinder(NoseRadius,460,Base.Vector(NoseLength,0,0),Base.Vector(1,0,0),360)
+
+# fins
+TubeFinOuter = Part.makeCylinder(TubeFinRadius                 ,TubeFinLength,Base.Vector(TotalLength-TubeFinLength,NoseDiameter-.49,0),Base.Vector(1,0,0),360)
+TubeFinInner = Part.makeCylinder(TubeFinRadius-TubeFinThickness,TubeFinLength,Base.Vector(TotalLength-TubeFinLength,NoseDiameter-.49,0),Base.Vector(1,0,0),360)
+TubeFin1 = TubeFinOuter.cut(TubeFinInner)
+TubeFin1 = TubeFin1.makeFillet(.49,TubeFin1.Edges)
+#Part.show(TubeFin1)
+
+aTrsf=Base.Matrix()
+aTrsf.rotateX(2.*math.pi/3.)
+TubeFin2 = TubeFin1.transformGeometry(aTrsf)
+aTrsf.rotateX(2.*math.pi/3.)
+TubeFin3 = TubeFin1.transformGeometry(aTrsf)
+
+# put it all together
+Rocket = nose.fuse(cylinder)
+Rocket = Rocket.fuse(TubeFin1)
+Rocket = Rocket.fuse(TubeFin2)
+Rocket = Rocket.fuse(TubeFin3)
+
+Rocket.tessellate(.002)
+Part.show(Rocket)
+sol = Rocket.Solids[0]
+print sol.CenterOfMass
+Rocket.exportStl("/scratch/dkokron/OpenFOAM/Rockets/SimpleRocketTubeFins_T002.stl")
