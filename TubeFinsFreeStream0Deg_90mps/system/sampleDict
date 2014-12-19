@@ -1,0 +1,224 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      sampleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Set output format : choice of
+//      xmgr
+//      jplot
+//      gnuplot
+//      raw
+//      vtk
+//      csv
+setFormat gnuplot;
+
+// Surface output format. Choice of
+//      null        : suppress output
+//      ensight     : Ensight Gold format, one field per case file
+//      foamFile    : separate points, faces and values file
+//      dx          : DX scalar or vector format
+//      vtk         : VTK ascii format
+//      raw         : x y z value format for use with e.g. gnuplot 'splot'.
+//
+// Note:
+// other formats such as obj, stl, etc can also be written (by proxy)
+// but without any values!
+surfaceFormat vtk;
+
+// optionally define extra controls for the output formats
+formatOptions
+{
+    ensight
+    {
+        format  ascii;
+    }
+}
+
+// interpolationScheme. choice of
+//      cell          : use cell-centre value only; constant over cells (default)
+//      cellPoint     : use cell-centre and vertex values
+//      cellPointFace : use cell-centre, vertex and face values.
+//      pointMVC      : use point values only (Mean Value Coordinates)
+//      cellPatchConstrained : use cell-centre except on boundary faces where
+//        it uses the boundary value. For use with e.g. patchCloudSet.
+// 1] vertex values determined from neighbouring cell-centre values
+// 2] face values determined using the current face interpolation scheme
+//    for the field (linear, gamma, etc.)
+interpolationScheme cellPoint;
+
+// Fields to sample.
+fields
+(
+    p
+    U
+);
+
+// Set sampling definition: choice of
+//      uniform             evenly distributed points on line
+//      face                one point per face intersection
+//      midPoint            one point per cell, inbetween two face intersections
+//      midPointAndFace     combination of face and midPoint
+//
+//      polyLine            specified points, not nessecary on line, uses
+//                          tracking
+//      cloud               specified points, uses findCell
+//      triSurfaceMeshPointSet  points of triSurface
+//
+// axis: how to write point coordinate. Choice of
+// - x/y/z: x/y/z coordinate only
+// - xyz: three columns
+//  (probably does not make sense for anything but raw)
+// - distance: distance from start of sampling line (if uses line) or
+//             distance from first specified sampling point
+//
+// type specific:
+//      uniform, face, midPoint, midPointAndFace : start and end coordinate
+//      uniform: extra number of sampling points
+//      polyLine, cloud: list of coordinates
+//      patchCloud: list of coordinates and set of patches to look for nearest
+
+sets
+(
+
+    inlet-y000
+    {
+        type    cloud;
+        axis    xyz;
+        points  ((-0.400 0.000 0.700)
+                 (-0.400 0.000 0.650)
+                 (-0.400 0.000 0.600)
+                 (-0.400 0.000 0.550)
+                 (-0.400 0.000 0.500)
+                 (-0.400 0.000 0.450)
+                 (-0.400 0.000 0.400)
+                 (-0.400 0.000 0.380)
+                 (-0.400 0.000 0.360)
+                 (-0.400 0.000 0.340)
+                 (-0.400 0.000 0.320)
+                 (-0.400 0.000 0.300)
+                 (-0.400 0.000 0.280)
+                 (-0.400 0.000 0.260)
+                 (-0.400 0.000 0.240)
+                 (-0.400 0.000 0.220)
+                 (-0.400 0.000 0.200)
+                 (-0.400 0.000 0.180)
+                 (-0.400 0.000 0.160)
+                 (-0.400 0.000 0.140)
+                 (-0.400 0.000 0.120)
+                 (-0.400 0.000 0.100)
+                 (-0.400 0.000 0.090)
+                 (-0.400 0.000 0.080)
+                 (-0.400 0.000 0.070)
+                 (-0.400 0.000 0.060)
+                 (-0.400 0.000 0.050)
+                 (-0.400 0.000 0.040)
+                 (-0.400 0.000 0.030)
+                 (-0.400 0.000 0.020)
+                 (-0.400 0.000 0.010));
+    }
+
+    inlet-y200
+    {
+        type    cloud;
+        axis    xyz;
+        points  ((-0.400 0.200 0.700)
+                 (-0.400 0.200 0.650)
+                 (-0.400 0.200 0.600)
+                 (-0.400 0.200 0.550)
+                 (-0.400 0.200 0.500)
+                 (-0.400 0.200 0.450)
+                 (-0.400 0.200 0.400)
+                 (-0.400 0.200 0.380)
+                 (-0.400 0.200 0.360)
+                 (-0.400 0.200 0.340)
+                 (-0.400 0.200 0.320)
+                 (-0.400 0.200 0.300)
+                 (-0.400 0.200 0.280)
+                 (-0.400 0.200 0.260)
+                 (-0.400 0.200 0.240)
+                 (-0.400 0.200 0.220)
+                 (-0.400 0.200 0.200)
+                 (-0.400 0.200 0.180)
+                 (-0.400 0.200 0.160)
+                 (-0.400 0.200 0.140)
+                 (-0.400 0.200 0.120)
+                 (-0.400 0.200 0.100)
+                 (-0.400 0.200 0.090)
+                 (-0.400 0.200 0.080)
+                 (-0.400 0.200 0.070)
+                 (-0.400 0.200 0.060)
+                 (-0.400 0.200 0.050)
+                 (-0.400 0.200 0.040)
+                 (-0.400 0.200 0.030)
+                 (-0.400 0.200 0.020)
+                 (-0.400 0.200 0.010));
+    }
+
+    inlet-y400
+    {
+        type    cloud;
+        axis    xyz;
+        points  ((-0.400 0.400 0.700)
+                 (-0.400 0.400 0.650)
+                 (-0.400 0.400 0.600)
+                 (-0.400 0.400 0.550)
+                 (-0.400 0.400 0.500)
+                 (-0.400 0.400 0.450)
+                 (-0.400 0.400 0.400)
+                 (-0.400 0.400 0.380)
+                 (-0.400 0.400 0.360)
+                 (-0.400 0.400 0.340)
+                 (-0.400 0.400 0.320)
+                 (-0.400 0.400 0.300)
+                 (-0.400 0.400 0.280)
+                 (-0.400 0.400 0.260)
+                 (-0.400 0.400 0.240)
+                 (-0.400 0.400 0.220)
+                 (-0.400 0.400 0.200)
+                 (-0.400 0.400 0.180)
+                 (-0.400 0.400 0.160)
+                 (-0.400 0.400 0.140)
+                 (-0.400 0.400 0.120)
+                 (-0.400 0.400 0.100)
+                 (-0.400 0.400 0.090)
+                 (-0.400 0.400 0.080)
+                 (-0.400 0.400 0.070)
+                 (-0.400 0.400 0.060)
+                 (-0.400 0.400 0.050)
+                 (-0.400 0.400 0.040)
+                 (-0.400 0.400 0.030)
+                 (-0.400 0.400 0.020)
+                 (-0.400 0.400 0.010));
+    }
+
+    Ahmed-25-y000-whole
+    {
+       type    cloud;
+        axis    xyz;
+        points  (#include "/scratch/dkokron/OpenFOAM/ERCOFTAC/case82/Ahmed-25-y000-whole.points");
+    }
+
+    Ahmed-25-yp000-bl
+    {
+       type    cloud;
+        axis    xyz;
+        points  (#include "/scratch/dkokron/OpenFOAM/ERCOFTAC/case82/Ahmed-25-yp000-bl.points");
+    }
+
+
+
+);
+
+
+// *********************************************************************** //

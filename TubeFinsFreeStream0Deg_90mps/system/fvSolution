@@ -1,0 +1,97 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.3.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    p
+    {
+        solver          GAMG;
+        tolerance       1e-15;
+        relTol          0.0001;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        cacheAgglomeration on;
+        agglomerator    faceAreaPair;
+        nCellsInCoarsestLevel 800;
+//        processorAgglomerator none; //none,masterCoarsest,manual,procFaces
+        processorAgglomerator procFaces;
+        nAgglomeratingCells 4000; 
+        mergeLevels     1;
+    }
+    U
+    {
+        type            coupled;
+        solver          SmoothSolver;
+        smoother        GaussSeidel;
+        tolerance       (1e-12 1e-12 1e-12);
+        relTol          (0.0001 0.0001 0.0001);
+        nSweeps         1;
+    }
+    k
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-12;
+        relTol          0.00001;
+        nSweeps         1;
+    }
+    omega
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-12;
+        relTol          0.0001;
+        nSweeps         1;
+    }
+}
+
+SIMPLE
+{
+    nNonOrthogonalCorrectors 1;
+    pRefCell        0;
+    pRefValue       0;
+}
+
+potentialFlow
+{
+    pRefCell        0;
+    pRefValue       0;
+    nNonOrthogonalCorrectors 6;
+    residualControl
+    {
+        p               1e-8;
+        U               8e-8;
+        "(k|omega)"     1e-8;
+    }
+}
+
+relaxationFactors
+{
+    p               0.3;
+    U               0.7;
+    k               0.7;
+    omega           0.7;
+}
+
+cache
+{
+    grad(U)         ;
+}
+
+
+// ************************************************************************* //

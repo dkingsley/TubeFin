@@ -1,0 +1,47 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+
+# copy surface from resources folder
+cp <<<PathTo>>>/SimpleRocketTubeFins.stl constant/triSurface/SimpleRocket.stl
+
+# Extract features for snapping
+runApplication surfaceFeatureExtract
+
+# Make dummy 0 directory
+cp -r 0.org 0
+
+runApplication blockMesh
+
+cp system/decomposeParDict.hierarchical system/decomposeParDict
+
+runApplication decomposePar
+
+cp system/decomposeParDict.ptscotch system/decomposeParDict
+
+runParallel snappyHexMesh 8 -overwrite -parallel
+
+runParallel checkMesh 8 -allTopology -latestTime
+
+find . -type f -iname "*level*" -exec rm {} \;
+
+ls -d processor* | xargs -i cp -r 0.org/* ./{}/0/ $1
+
+runParallel renumberMesh 8 -overwrite
+
+runParallel potentialFoam 8 -noFunctionObjects
+
+runParallel `getApplication` 8
+
+runParallel yPlusRAS 8 -latestTime
+
+runParallel wallShearStress 8 -latestTime
+#runParallel sample 8 -latestTime
+
+runApplication reconstructParMesh -mergeTol 1e-6 -constant
+runApplication reconstructPar -zeroTime -latestTime
+
+# ----------------------------------------------------------------- end-of-file
